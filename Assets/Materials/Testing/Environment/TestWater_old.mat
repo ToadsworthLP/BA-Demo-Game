@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2199195872595351380
+--- !u!114 &-7933038029015792438
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterBorder
-  m_Shader: {fileID: -6465566751694194690, guid: 9ac1ecaf11fdf86419e3f683a1a6794c,
+  m_Name: TestWater_old
+  m_Shader: {fileID: -6465566751694194690, guid: 892cf536cacaa6f44b6dbfd84ca4e196,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -51,12 +51,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _QueueControl: 0
+    - _QueueControl: 1
     - _QueueOffset: 0
-    - _StepThreshold: 0.5
-    - _Step_Threshold: 0.5
-    - _Test: 0.5
-    - _WaveSpeed: 0.5
     m_Colors:
-    - _WaveColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MainColor: {r: 0.53459114, g: 0.76941115, b: 1, a: 1}
+    - _ObjectColor: {r: 0.38364774, g: 0.69417626, b: 1, a: 1}
   m_BuildTextureStacks: []
