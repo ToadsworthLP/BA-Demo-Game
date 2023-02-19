@@ -28,7 +28,7 @@ MonoBehaviour:
     overrideShaderPassIndex: 0
     overrideMode: 1
     overrideDepthState: 1
-    depthCompareFunction: 8
+    depthCompareFunction: 4
     enableWrite: 0
     stencilSettings:
       overrideStencilState: 0
@@ -137,9 +137,9 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -5155024528836233539}
   - {fileID: 3074221487506611794}
-  - {fileID: -5019274713315760665}
   - {fileID: -8661546074931894472}
-  m_RendererFeatureMap: bd764ae680ac75b8525eb4ab27d4a92ae7a5b6d23df457ba38670156bc01cc87
+  - {fileID: -5019274713315760665}
+  m_RendererFeatureMap: bd764ae680ac75b8525eb4ab27d4a92a38670156bc01cc87e7a5b6d23df457ba
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}

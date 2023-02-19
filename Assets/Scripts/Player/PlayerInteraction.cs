@@ -37,7 +37,7 @@ public class PlayerInteraction : MonoBehaviour
             {
                 Collider current = overlapBuffer[i];
 
-                float currentDistanceSquared = current.ClosestPoint(transform.position).sqrMagnitude;
+                float currentDistanceSquared = (transform.position - current.ClosestPoint(transform.position)).sqrMagnitude;
                 if (currentDistanceSquared < bestDistanceSquared)
                 {
                     bestDistanceSquared = currentDistanceSquared;
