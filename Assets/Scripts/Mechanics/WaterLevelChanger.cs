@@ -28,7 +28,7 @@ public class WaterLevelChanger : MonoBehaviour, IInteractable
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.cyan;
+        Gizmos.color = Color.gray;
         Gizmos.DrawCube(new Vector3(transform.position.x, targetWaterLevel, transform.position.z), new Vector3(3, 0.1f, 3));
     }
 }
