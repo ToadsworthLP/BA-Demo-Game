@@ -6,4 +6,5 @@ public class ChangeWaterLevelEvent : GenericScriptableObjectEvent<ChangeWaterLev
 public struct ChangeWaterLevelEventArgs
 {
     public float targetLevel;
+    public float changeRate;
 }

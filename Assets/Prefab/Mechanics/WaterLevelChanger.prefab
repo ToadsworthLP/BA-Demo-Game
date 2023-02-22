@@ -70,8 +70,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetWaterLevel: -1
-  changeWaterLevelEvent: {fileID: 11400000, guid: 0b486c590311c42448ab20957571ce9e,
-    type: 2}
+  changeRate: 1
+  changeTargetWaterLevelEvent: {fileID: 0}
   rendererObject: {fileID: 4960866527862421217}
 --- !u!1 &4960866527862421217
 GameObject:

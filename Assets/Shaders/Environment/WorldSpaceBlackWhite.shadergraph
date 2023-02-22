@@ -11,6 +11,15 @@
         },
         {
             "m_Id": "d0737fc3a94841c19e8e0d035089cfe6"
+        },
+        {
+            "m_Id": "86575fab6cd64e89a4dd30eb05c5f33d"
+        },
+        {
+            "m_Id": "3a5d548e433240d8aa21e6f00582ed87"
+        },
+        {
+            "m_Id": "a4a3d0b8f8b644c99795b8426f39f070"
         }
     ],
     "m_Keywords": [],
@@ -174,8 +183,8 @@
     ],
     "m_VertexContext": {
         "m_Position": {
-            "x": 334.0000305175781,
-            "y": -183.3333282470703
+            "x": 554.666748046875,
+            "y": -183.33335876464845
         },
         "m_Blocks": [
             {
@@ -191,8 +200,8 @@
     },
     "m_FragmentContext": {
         "m_Position": {
-            "x": 334.0000305175781,
-            "y": 16.666702270507814
+            "x": 554.666748046875,
+            "y": 16.666641235351564
         },
         "m_Blocks": [
             {
@@ -416,6 +425,36 @@
 }
 
 {
+    "m_SGVersion": 3,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.ColorShaderProperty",
+    "m_ObjectId": "3a5d548e433240d8aa21e6f00582ed87",
+    "m_Guid": {
+        "m_GuidSerialized": "869ad89d-77f7-4fe3-83fa-1c1141205455"
+    },
+    "m_Name": "CheckerboardColorBelow",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "CheckerboardColorBelow",
+    "m_DefaultReferenceName": "_CheckerboardColorBelow",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.0
+    },
+    "isMainColor": false,
+    "m_ColorMode": 0
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.BlockNode",
     "m_ObjectId": "3b9a40bdaa334a0287198f7279b74e35",
@@ -531,6 +570,15 @@
         },
         {
             "m_Id": "d0737fc3a94841c19e8e0d035089cfe6"
+        },
+        {
+            "m_Id": "86575fab6cd64e89a4dd30eb05c5f33d"
+        },
+        {
+            "m_Id": "3a5d548e433240d8aa21e6f00582ed87"
+        },
+        {
+            "m_Id": "a4a3d0b8f8b644c99795b8426f39f070"
         }
     ]
 }
@@ -799,10 +847,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -411.9999694824219,
-            "y": 16.666667938232423,
-            "width": 209.333251953125,
-            "height": 328.0000305175781
+            "x": -191.3333282470703,
+            "y": 16.666641235351564,
+            "width": 209.33343505859376,
+            "height": 328.00006103515627
         }
     },
     "m_Slots": [
@@ -831,6 +879,36 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     }
+}
+
+{
+    "m_SGVersion": 3,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.ColorShaderProperty",
+    "m_ObjectId": "86575fab6cd64e89a4dd30eb05c5f33d",
+    "m_Guid": {
+        "m_GuidSerialized": "e0bf9aae-f776-4190-85d2-11f599a480e9"
+    },
+    "m_Name": "CheckerboardColorAbove",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "CheckerboardColorAbove",
+    "m_DefaultReferenceName": "_CheckerboardColorAbove",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.0
+    },
+    "isMainColor": false,
+    "m_ColorMode": 0
 }
 
 {
@@ -960,6 +1038,34 @@
         "y": 0.0,
         "z": 0.0,
         "w": 0.0
+    }
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "a4a3d0b8f8b644c99795b8426f39f070",
+    "m_Guid": {
+        "m_GuidSerialized": "379c4926-08f4-44fd-a9cf-e9cce590ce59"
+    },
+    "m_Name": "CheckerboardIntensity",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "CheckerboardIntensity",
+    "m_DefaultReferenceName": "_CheckerboardIntensity",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.0,
+    "m_FloatType": 0,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
     }
 }
 

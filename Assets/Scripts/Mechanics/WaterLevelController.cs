@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class WaterLevelController : MonoBehaviour
 {
-    [SerializeField] private float maxLevelChangeRate;
     [SerializeField] private float initialWaterLevel;
     [SerializeField] private float waterShoreFadeOutTime;
     [SerializeField] private float waterShoreFadeInTime;
@@ -12,10 +11,12 @@ public class WaterLevelController : MonoBehaviour
     [SerializeField] private float shoreAlphaClipInvisible;
     [SerializeField] private Vector3 cameraStartShakeVelocity;
     [SerializeField] private Vector3 cameraEndShakeVelocity;
-    [SerializeField] private ChangeWaterLevelEvent changeWaterLevelEvent;
+    [SerializeField] private FloatContainer currentWaterLevel;
+    [SerializeField] private ChangeWaterLevelEvent changeTargetWaterLevelEvent;
     [SerializeField] private Material towerMaterial;
     [SerializeField] private Material[] shoreMaterials;
 
+    private float currentChangeRate;
     private float targetLevel;
     private float shoreAlphaClip;
     private Coroutine waterLevelChangeCoroutine;
@@ -25,20 +26,25 @@ public class WaterLevelController : MonoBehaviour
     private void Start()
     {
         cameraShakeImpulse = GetComponent<CinemachineImpulseSource>();
+        currentWaterLevel.Value = initialWaterLevel;
+
+        shoreAlphaClip = shoreAlphaClipVisible;
     }
 
     private void OnEnable()
     {
-        changeWaterLevelEvent.Subscribe(ChangeWaterLevel);
-        transform.position = new Vector3(transform.position.x, initialWaterLevel, transform.position.z);
+        changeTargetWaterLevelEvent.Subscribe(ChangeWaterLevel);
+        UpdateShoreAlphaClipThreshold(shoreAlphaClipVisible);
         towerMaterial.SetFloat("_Border", initialWaterLevel);
+        currentWaterLevel.Value = initialWaterLevel;
     }
 
     private void OnDisable()
     {
-        changeWaterLevelEvent.Unsubscribe(ChangeWaterLevel);
-        transform.position = new Vector3(transform.position.x, initialWaterLevel, transform.position.z);
+        changeTargetWaterLevelEvent.Unsubscribe(ChangeWaterLevel);
+        UpdateShoreAlphaClipThreshold(shoreAlphaClipInvisible);
         towerMaterial.SetFloat("_Border", initialWaterLevel);
+        currentWaterLevel.Value = initialWaterLevel;
     }
 
     private void ChangeWaterLevel(ChangeWaterLevelEventArgs args)
@@ -46,6 +52,8 @@ public class WaterLevelController : MonoBehaviour
         if (targetLevel == args.targetLevel) return;
 
         targetLevel = args.targetLevel;
+        currentChangeRate = args.changeRate;
+
         if (waterLevelChangeCoroutine == null)
         {
             waterLevelChangeCoroutine = StartCoroutine(WaterLevelChanger());
@@ -75,9 +83,9 @@ public class WaterLevelController : MonoBehaviour
         {
             float level = transform.position.y;
 
-            if (Mathf.Abs(level - targetLevel) > maxLevelChangeRate * Time.deltaTime)
+            if (Mathf.Abs(level - targetLevel) > currentChangeRate * Time.deltaTime)
             {
-                level += maxLevelChangeRate * -Mathf.Sign(level - targetLevel) * Time.deltaTime;
+                level += currentChangeRate * -Mathf.Sign(level - targetLevel) * Time.deltaTime;
             }
             else
             {
@@ -86,6 +94,7 @@ public class WaterLevelController : MonoBehaviour
 
             transform.position = new Vector3(transform.position.x, level, transform.position.z);
             towerMaterial.SetFloat("_Border", level);
+            currentWaterLevel.Value = level;
 
             yield return new WaitForEndOfFrame();
         }

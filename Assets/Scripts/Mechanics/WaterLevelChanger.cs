@@ -3,7 +3,8 @@ using UnityEngine;
 public class WaterLevelChanger : MonoBehaviour, IInteractable
 {
     [SerializeField] private float targetWaterLevel;
-    [SerializeField] private ChangeWaterLevelEvent changeWaterLevelEvent;
+    [SerializeField] private float changeRate;
+    [SerializeField] private ChangeWaterLevelEvent changeTargetWaterLevelEvent;
     [SerializeField] private GameObject rendererObject;
 
     public void Focus(InteractionContext context)
@@ -13,11 +14,10 @@ public class WaterLevelChanger : MonoBehaviour, IInteractable
 
     public void Interact(InteractionContext context)
     {
-        Debug.Log($"Change water level to {targetWaterLevel}");
-
-        changeWaterLevelEvent.Invoke(new ChangeWaterLevelEventArgs()
+        changeTargetWaterLevelEvent.Invoke(new ChangeWaterLevelEventArgs()
         {
-            targetLevel = targetWaterLevel
+            targetLevel = targetWaterLevel,
+            changeRate = changeRate
         });
     }
 
@@ -28,7 +28,7 @@ public class WaterLevelChanger : MonoBehaviour, IInteractable
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.gray;
-        Gizmos.DrawCube(new Vector3(transform.position.x, targetWaterLevel, transform.position.z), new Vector3(3, 0.1f, 3));
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawCube(new Vector3(transform.position.x, targetWaterLevel, transform.position.z), new Vector3(3, 0.01f, 3));
     }
 }

@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade3e47d3aec5eb449270ea9415ecb20, type: 3}
-  m_Name: WaterLevelChanged
+  m_Name: TargetWaterLevelChangedEvent
   m_EditorClassIdentifier: 
