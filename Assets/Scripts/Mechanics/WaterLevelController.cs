@@ -13,7 +13,7 @@ public class WaterLevelController : MonoBehaviour
     [SerializeField] private Vector3 cameraEndShakeVelocity;
     [SerializeField] private FloatContainer currentWaterLevel;
     [SerializeField] private ChangeWaterLevelEvent changeTargetWaterLevelEvent;
-    [SerializeField] private Material towerMaterial;
+    [SerializeField] private Material[] towerMaterials;
     [SerializeField] private Material[] shoreMaterials;
 
     private float currentChangeRate;
@@ -35,7 +35,7 @@ public class WaterLevelController : MonoBehaviour
     {
         changeTargetWaterLevelEvent.Subscribe(ChangeWaterLevel);
         UpdateShoreAlphaClipThreshold(shoreAlphaClipVisible);
-        towerMaterial.SetFloat("_Border", initialWaterLevel);
+        UpdateTowerMaterials(initialWaterLevel);
         currentWaterLevel.Value = initialWaterLevel;
     }
 
@@ -43,7 +43,7 @@ public class WaterLevelController : MonoBehaviour
     {
         changeTargetWaterLevelEvent.Unsubscribe(ChangeWaterLevel);
         UpdateShoreAlphaClipThreshold(shoreAlphaClipInvisible);
-        towerMaterial.SetFloat("_Border", initialWaterLevel);
+        UpdateTowerMaterials(initialWaterLevel);
         currentWaterLevel.Value = initialWaterLevel;
     }
 
@@ -93,7 +93,7 @@ public class WaterLevelController : MonoBehaviour
             }
 
             transform.position = new Vector3(transform.position.x, level, transform.position.z);
-            towerMaterial.SetFloat("_Border", level);
+            UpdateTowerMaterials(level);
             currentWaterLevel.Value = level;
 
             yield return new WaitForEndOfFrame();
@@ -112,6 +112,14 @@ public class WaterLevelController : MonoBehaviour
         UpdateShoreAlphaClipThreshold(shoreAlphaClip);
 
         waterLevelChangeCoroutine = null;
+    }
+
+    private void UpdateTowerMaterials(float value)
+    {
+        foreach (Material material in towerMaterials)
+        {
+            material.SetFloat("_Border", value);
+        }
     }
 
     private void UpdateShoreAlphaClipThreshold(float value)

@@ -95,8 +95,6 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             stickyObjectBelow = null;
         }
 
-        Debug.Log($"{gameObject.name}: D {groundDistance} G {isGrounded}");
-
         Vector3 position = transform.position;
 
         if (interactionMovementInProgress)
