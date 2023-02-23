@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour, ICharacterController
 {
     public PlayerInput input { get; private set; }
+    public bool IsOnGround { get => motor.GroundingStatus.IsStableOnGround; }
 
     [Header("References")]
     [SerializeField] private Transform cameraTransform;
