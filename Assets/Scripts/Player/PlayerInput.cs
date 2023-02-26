@@ -53,6 +53,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Restart"",
+                    ""type"": ""Button"",
+                    ""id"": ""05009467-a5a3-4003-8907-85bfe21a7465"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -264,6 +273,28 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""342ac42a-77e0-4bf1-b86a-e612beaf6862"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dc0bd62e-64eb-4f6d-9d5a-149f9f76fe17"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -275,6 +306,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Main_Move = m_Main.FindAction("Move", throwIfNotFound: true);
         m_Main_Look = m_Main.FindAction("Look", throwIfNotFound: true);
         m_Main_Interact = m_Main.FindAction("Interact", throwIfNotFound: true);
+        m_Main_Restart = m_Main.FindAction("Restart", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -339,6 +371,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_Move;
     private readonly InputAction m_Main_Look;
     private readonly InputAction m_Main_Interact;
+    private readonly InputAction m_Main_Restart;
     public struct MainActions
     {
         private @PlayerInput m_Wrapper;
@@ -346,6 +379,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Main_Move;
         public InputAction @Look => m_Wrapper.m_Main_Look;
         public InputAction @Interact => m_Wrapper.m_Main_Interact;
+        public InputAction @Restart => m_Wrapper.m_Main_Restart;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -364,6 +398,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @Restart.started += instance.OnRestart;
+            @Restart.performed += instance.OnRestart;
+            @Restart.canceled += instance.OnRestart;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -377,6 +414,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @Restart.started -= instance.OnRestart;
+            @Restart.performed -= instance.OnRestart;
+            @Restart.canceled -= instance.OnRestart;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -399,5 +439,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnRestart(InputAction.CallbackContext context);
     }
 }

@@ -23,10 +23,27 @@ public class PlayerController : MonoBehaviour, ICharacterController
     [Header("Physics")]
     [SerializeField] private Vector3 Gravity = new Vector3(0, -30f, 0);
 
+    [Header("Death Check")]
+    [SerializeField] private int deathWaitFixedFrames;
+    [SerializeField] private LayerMask deathTriggerLayer;
+    [SerializeField] private Vector3 deathTriggerOffset;
+    [SerializeField] private float deathTriggerRadius;
+    [SerializeField] private ScriptableObjectEvent playerDeathEvent;
+
+    [Header("Goal Check")]
+    [SerializeField] private LayerMask goalTriggerLayer;
+    [SerializeField] private Vector3 goalTriggerOffset;
+    [SerializeField] private float goalTriggerRadius;
+    [SerializeField] private ScriptableObjectEvent clearStageEvent;
+
     private Vector3 movementInput;
     private Vector3 lookDirection;
 
     private KinematicCharacterMotor motor;
+
+    private int currentDeathWaitTime;
+    private bool isDead = false;
+    private bool stageCleared = false;
 
     private void Start()
     {
@@ -41,6 +58,8 @@ public class PlayerController : MonoBehaviour, ICharacterController
 
     private void FixedUpdate()
     {
+        if (isDead || stageCleared) return;
+
         // Read input from input system
         Vector2 rawMovementInput = input.Main.Move.ReadValue<Vector2>();
 
@@ -58,6 +77,33 @@ public class PlayerController : MonoBehaviour, ICharacterController
         // Move and look inputs
         movementInput = cameraPlanarRotation * moveInputVector;
         lookDirection = movementInput;
+
+        // If something collides for more than deathWaitFrames frames, die
+        if (Physics.CheckSphere(transform.position + deathTriggerOffset, deathTriggerRadius, deathTriggerLayer, QueryTriggerInteraction.Collide))
+        {
+            if (currentDeathWaitTime < deathWaitFixedFrames)
+            {
+                currentDeathWaitTime++;
+            }
+            else
+            {
+                if (!isDead)
+                {
+                    isDead = true;
+                    playerDeathEvent.Invoke();
+                }
+            }
+        }
+
+        // If something collides, the stage is cleared
+        if (Physics.CheckSphere(transform.position + goalTriggerOffset, goalTriggerRadius, goalTriggerLayer, QueryTriggerInteraction.Collide))
+        {
+            if (!stageCleared)
+            {
+                clearStageEvent.Invoke();
+                stageCleared = true;
+            }
+        }
     }
 
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
@@ -74,6 +120,12 @@ public class PlayerController : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
+        if (isDead || stageCleared)
+        {
+            currentVelocity = Vector3.zero;
+            return;
+        }
+
         Vector3 targetMovementVelocity = Vector3.zero;
         if (motor.GroundingStatus.IsStableOnGround)
         {
@@ -132,5 +184,14 @@ public class PlayerController : MonoBehaviour, ICharacterController
     public void PostGroundingUpdate(float deltaTime) { }
 
     public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, Vector3 atCharacterPosition, Quaternion atCharacterRotation, ref HitStabilityReport hitStabilityReport) { }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position + deathTriggerOffset, deathTriggerRadius);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position + goalTriggerOffset, goalTriggerRadius);
+    }
 
 }

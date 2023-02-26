@@ -6,10 +6,11 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     [Header("Ground")]
     [SerializeField] private Vector3 raycastOffset;
     [SerializeField] private LayerMask groundCheckLayerMask;
+    [SerializeField] private float groundRaycastDistance;
+    [SerializeField] private float ceilingRaycastDistance;
 
     [Header("Floating")]
     [SerializeField] private FloatContainer currentWaterLevel;
-    [SerializeField] private Vector3 floatingCheckPlaneOffset;
     [SerializeField] private LayerMask floatingCheckLayerMask;
 
     [Header("Physics")]
@@ -29,13 +30,16 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     private Vector3 fallVelocity;
     private bool isGrounded;
     private float groundDistance;
+    private float ceilingDistance;
+    private bool isAgainstCeiling;
 
     private bool interactionMovementInProgress;
     private Vector3 interactionTargetPosition;
 
     private RaycastHit[] groundCheckBuffer;
 
-    private Transform stickyObjectBelow;
+    private Transform floatingObjectBelow;
+    private Transform floatingObjectAbove;
 
     private void Start()
     {
@@ -49,9 +53,10 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
     public void UpdateMovement(out Vector3 goalPosition, out Quaternion goalRotation, float deltaTime)
     {
-        isSubmerged = Physics.CheckSphere(transform.position + floatingCheckPlaneOffset, 0.01f, floatingCheckLayerMask);
+        isSubmerged = Physics.CheckSphere(transform.position, 0.01f, floatingCheckLayerMask);
 
-        int raycastHitCount = Physics.RaycastNonAlloc(transform.position + raycastOffset, Vector3.down, groundCheckBuffer, Mathf.Max(Mathf.Abs(fallVelocity.y), (raycastOffset.y * 2) + 0.1f), groundCheckLayerMask);
+        // Ground check
+        int raycastHitCount = Physics.RaycastNonAlloc(transform.position + raycastOffset, Vector3.down, groundCheckBuffer, Mathf.Max(Mathf.Abs(fallVelocity.y), groundRaycastDistance), groundCheckLayerMask);
         if (raycastHitCount > 0)
         {
             // Find closest hit that isn't a self-hit
@@ -66,7 +71,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
                 if (hit.distance < currentClosestDistance)
                 {
-                    currentClosestDistance = hit.distance - (raycastOffset.y * 2);
+                    currentClosestDistance = hit.distance - raycastOffset.y - (collider.size.y / 2);
                     currentClosestIndex = i;
                 }
             }
@@ -78,26 +83,73 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
                 if (groundCheckBuffer[currentClosestIndex].collider.CompareTag(stickyFloorTag))
                 {
-                    stickyObjectBelow = groundCheckBuffer[currentClosestIndex].transform;
+                    floatingObjectBelow = groundCheckBuffer[currentClosestIndex].transform;
                 }
             }
             else
             {
                 isGrounded = false;
                 groundDistance = float.PositiveInfinity;
-                stickyObjectBelow = null;
+                floatingObjectBelow = null;
             }
         }
         else
         {
             isGrounded = false;
             groundDistance = float.PositiveInfinity;
-            stickyObjectBelow = null;
+            floatingObjectBelow = null;
         }
+
+        // Ceiling check
+        raycastHitCount = Physics.RaycastNonAlloc(transform.position + raycastOffset, Vector3.up, groundCheckBuffer, ceilingRaycastDistance, groundCheckLayerMask);
+        if (raycastHitCount > 0)
+        {
+            // Find closest hit that isn't a self-hit
+            float currentClosestDistance = float.PositiveInfinity;
+            int currentClosestIndex = -1;
+
+            for (int i = 0; i < raycastHitCount; i++)
+            {
+                RaycastHit hit = groundCheckBuffer[i];
+
+                if (hit.collider.gameObject == gameObject) continue;
+
+                if (hit.distance < currentClosestDistance)
+                {
+                    currentClosestDistance = hit.distance + raycastOffset.y - (collider.size.y / 2);
+                    currentClosestIndex = i;
+                }
+            }
+
+            if (currentClosestIndex >= 0)
+            {
+                isAgainstCeiling = currentClosestDistance <= 0.5f;
+                ceilingDistance = currentClosestDistance;
+
+                if (groundCheckBuffer[currentClosestIndex].collider.CompareTag(stickyFloorTag))
+                {
+                    floatingObjectAbove = groundCheckBuffer[currentClosestIndex].transform;
+                }
+            }
+            else
+            {
+                isAgainstCeiling = false;
+                ceilingDistance = float.PositiveInfinity;
+                floatingObjectAbove = null;
+            }
+        }
+        else
+        {
+            isAgainstCeiling = false;
+            ceilingDistance = float.PositiveInfinity;
+            floatingObjectAbove = null;
+        }
+
+        //Debug.Log($"{name}: G {isGrounded} {groundDistance} b {floatingObjectBelow == null} C {isAgainstCeiling} {ceilingDistance} a {floatingObjectAbove == null} S {isSubmerged}", this);
 
         Vector3 position = transform.position;
 
-        if (interactionMovementInProgress)
+        if (interactionMovementInProgress) // Pushing motion takes precedence over everything else
         {
             float remainingDistance = (interactionTargetPosition - transform.position).magnitude;
             if (remainingDistance < pushSpeed * Time.fixedDeltaTime)
@@ -110,46 +162,74 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
                 position += (interactionTargetPosition - transform.position).normalized * pushSpeed * Time.fixedDeltaTime;
             }
         }
-        else
+        else // Do normal physics
         {
-            if (stickyObjectBelow != null)
+            if (floatingObjectBelow == null) // Do normal physics if not glued to another crate below
             {
-                position = new Vector3(stickyObjectBelow.position.x, position.y, stickyObjectBelow.position.z);
+                if (isGrounded || isSubmerged)
+                {
+                    fallVelocity = Vector3.zero;
+                }
+
+                if (isGrounded && isSubmerged)
+                {
+                    if (isAgainstCeiling && floatingObjectAbove == null)
+                    {
+                        position = new Vector3(position.x, Mathf.Min(currentWaterLevel, position.y + ceilingDistance), position.z);
+                    }
+                    else
+                    {
+                        position = new Vector3(position.x, Mathf.Max(currentWaterLevel, position.y - groundDistance), position.z);
+                    }
+                }
+
+                if (isGrounded && !isSubmerged)
+                {
+                    if (isAgainstCeiling && floatingObjectAbove == null)
+                    {
+                        position = new Vector3(position.x, Mathf.Min(position.y - groundDistance, position.y + ceilingDistance), position.z);
+                    }
+                    else
+                    {
+                        position = new Vector3(position.x, position.y - groundDistance, position.z);
+                    }
+                }
+
+                if (!isGrounded && !isSubmerged)
+                {
+                    fallVelocity += gravity * Time.fixedDeltaTime;
+
+                    if (Mathf.Abs(fallVelocity.y) < groundDistance)
+                    {
+                        position += fallVelocity;
+                    }
+                    else
+                    {
+                        position = new Vector3(position.x, position.y - groundDistance, position.z);
+                    }
+                }
+
+                if (!isGrounded && isSubmerged)
+                {
+                    if (isAgainstCeiling && floatingObjectAbove == null)
+                    {
+                        position = new Vector3(position.x, Mathf.Min(currentWaterLevel, position.y + ceilingDistance), position.z);
+                    }
+                    else
+                    {
+                        position = new Vector3(position.x, currentWaterLevel, position.z);
+                    }
+                }
             }
-        }
-
-        if (isGrounded || isSubmerged)
-        {
-            fallVelocity = Vector3.zero;
-        }
-
-        if (isGrounded && isSubmerged)
-        {
-            position = new Vector3(position.x, Mathf.Max(currentWaterLevel, position.y + floatingCheckPlaneOffset.y - groundDistance), position.z);
-        }
-
-        if (isGrounded && !isSubmerged)
-        {
-            position = new Vector3(position.x, position.y + floatingCheckPlaneOffset.y - groundDistance, position.z);
-        }
-
-        if (!isGrounded && !isSubmerged)
-        {
-            fallVelocity += interactionMovementInProgress ? Vector3.zero : gravity * Time.fixedDeltaTime;
-
-            if (Mathf.Abs(fallVelocity.y) < groundDistance)
+            else // Stick to the crate below if there is one, destroy this crate if squished
             {
-                position += fallVelocity;
-            }
-            else
-            {
-                position = new Vector3(position.x, position.y + floatingCheckPlaneOffset.y - groundDistance, position.z);
-            }
-        }
+                position = new Vector3(floatingObjectBelow.position.x, floatingObjectBelow.position.y + collider.size.y + 0.01f, floatingObjectBelow.position.z);
 
-        if (!isGrounded && isSubmerged)
-        {
-            position = new Vector3(position.x, currentWaterLevel, position.z);
+                if (isAgainstCeiling)
+                {
+                    Destroy(gameObject);
+                }
+            }
         }
 
         goalPosition = position;
@@ -159,10 +239,13 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawCube(transform.position + floatingCheckPlaneOffset, new Vector3(2, 0.01f, 2));
+        Gizmos.DrawCube(transform.position, new Vector3(2, 0.01f, 2));
 
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position + raycastOffset, transform.position + raycastOffset + gravity);
+        Gizmos.DrawLine(transform.position + raycastOffset, transform.position + raycastOffset + (Vector3.down * groundRaycastDistance));
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position + raycastOffset, transform.position + raycastOffset + (Vector3.up * ceilingRaycastDistance));
     }
 
     public void Focus(InteractionContext context)
