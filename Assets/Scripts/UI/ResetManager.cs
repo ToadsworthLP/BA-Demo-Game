@@ -4,11 +4,12 @@ using UnityEngine.UI;
 public class ResetManager : MonoBehaviour
 {
     [SerializeField] private ScriptableObjectEvent resetStageEvent;
-    [SerializeField] private PlayerInput input;
     [SerializeField] private float delay;
     [SerializeField] private Canvas canvas;
     [SerializeField] private Image progressBar;
     [SerializeField] private CanvasRenderer[] renderers;
+
+    private PlayerInput input;
 
     private float currentProgress;
     private bool isResetting = false;

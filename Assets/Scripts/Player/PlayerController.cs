@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, ICharacterController
 {
+    public bool IsFrozen { get; set; }
     public PlayerInput input { get; private set; }
     public bool IsOnGround { get => motor.GroundingStatus.IsStableOnGround; }
 
@@ -58,7 +59,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
 
     private void FixedUpdate()
     {
-        if (isDead || stageCleared) return;
+        if (isDead || stageCleared || IsFrozen) return;
 
         // Read input from input system
         Vector2 rawMovementInput = input.Main.Move.ReadValue<Vector2>();
@@ -120,7 +121,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
-        if (isDead || stageCleared)
+        if (isDead || stageCleared || IsFrozen)
         {
             currentVelocity = Vector3.zero;
             return;

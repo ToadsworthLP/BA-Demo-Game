@@ -7,12 +7,14 @@ public class TransitionManager : MonoBehaviour
     public static TransitionManager Instance { get; private set; }
 
     [Header("Events")]
+    [SerializeField] private ScriptableObjectEvent tutorialEndEvent;
     [SerializeField] private ScriptableObjectEvent playerDeathEvent;
     [SerializeField] private ScriptableObjectEvent clearStageEvent;
     [SerializeField] private ScriptableObjectEvent resetStageEvent;
 
     [Header("Animations")]
     [SerializeField] private Animator animator;
+    [SerializeField] private string tutorialEndAnimationTriggerName;
     [SerializeField] private string deathAnimationTriggerName;
     [SerializeField] private string clearAnimationTriggerName;
     [SerializeField] private string resetAnimationTriggerName;
@@ -31,6 +33,11 @@ public class TransitionManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            playerDeathEvent.Subscribe(OnPlayerDeath);
+            clearStageEvent.Subscribe(OnStageCleared);
+            resetStageEvent.Subscribe(OnStageReset);
+            tutorialEndEvent.Subscribe(OnAfterTutorial);
         }
         else
         {
@@ -38,18 +45,9 @@ public class TransitionManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void OnAfterTutorial()
     {
-        playerDeathEvent.Subscribe(OnPlayerDeath);
-        clearStageEvent.Subscribe(OnStageCleared);
-        resetStageEvent.Subscribe(OnStageReset);
-    }
-
-    private void OnDisable()
-    {
-        playerDeathEvent.Unsubscribe(OnPlayerDeath);
-        clearStageEvent.Unsubscribe(OnStageCleared);
-        resetStageEvent.Unsubscribe(OnStageReset);
+        animator.SetTrigger(tutorialEndAnimationTriggerName);
     }
 
     private void OnPlayerDeath()
