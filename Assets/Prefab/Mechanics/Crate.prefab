@@ -113,18 +113,18 @@ MonoBehaviour:
   raycastOffset: {x: 0, y: 0.6, z: 0}
   groundCheckLayerMask:
     serializedVersion: 2
-    m_Bits: 65
+    m_Bits: 193
   groundRaycastDistance: 1.8
   ceilingRaycastDistance: 0.6
   currentWaterLevel: {fileID: 11400000, guid: 751a6d1d219838a42aeb1c1870794bc6, type: 2}
   floatingCheckLayerMask:
     serializedVersion: 2
     m_Bits: 16
-  gravity: {x: 0, y: -10, z: 0}
+  gravity: {x: 0, y: -5, z: 0}
   rendererObject: {fileID: 4880802917956926759}
   wallCheckLayerMask:
     serializedVersion: 2
-    m_Bits: 65
+    m_Bits: 193
   pushDistance: 1
   pushSpeed: 4
   pushDirections:

@@ -110,16 +110,27 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             float currentClosestDistance = float.PositiveInfinity;
             int currentClosestIndex = -1;
 
+            float currentClosestToFloatingObjAboveDistance = float.PositiveInfinity;
+            int currentClosestFloatingObjAboveIndex = -1;
+
             for (int i = 0; i < raycastHitCount; i++)
             {
                 RaycastHit hit = groundCheckBuffer[i];
 
                 if (hit.collider.gameObject == gameObject) continue;
 
+                //if (floatingObjectAbove != null && hit.collider.gameObject == floatingObjectAbove.gameObject) continue;
+
                 if (hit.distance < currentClosestDistance)
                 {
                     currentClosestDistance = hit.distance + raycastOffset.y - (collider.size.y / 2);
                     currentClosestIndex = i;
+                }
+
+                if (hit.distance < currentClosestToFloatingObjAboveDistance && groundCheckBuffer[currentClosestIndex].collider.CompareTag(stickyFloorTag))
+                {
+                    currentClosestToFloatingObjAboveDistance = hit.distance + raycastOffset.y - (collider.size.y / 2);
+                    currentClosestFloatingObjAboveIndex = i;
                 }
             }
 
@@ -128,9 +139,14 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
                 isAgainstCeiling = currentClosestDistance <= 0.5f;
                 ceilingDistance = currentClosestDistance;
 
-                if (groundCheckBuffer[currentClosestIndex].collider.CompareTag(stickyFloorTag))
+                if (currentClosestFloatingObjAboveIndex >= 0)
                 {
-                    floatingObjectAbove = groundCheckBuffer[currentClosestIndex].transform.GetComponent<FloatingObject>();
+                    if (floatingObjectAbove == null || groundCheckBuffer[currentClosestFloatingObjAboveIndex].transform != floatingObjectAbove.transform)
+                        floatingObjectAbove = groundCheckBuffer[currentClosestFloatingObjAboveIndex].transform.GetComponent<FloatingObject>();
+                }
+                else
+                {
+                    floatingObjectAbove = null;
                 }
             }
             else
@@ -238,9 +254,16 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
                 if (!isGrounded && isSubmerged)
                 {
-                    if (isAgainstCeiling && floatingObjectAbove == null)
+                    if (isAgainstCeiling)
                     {
-                        position = new Vector3(position.x, Mathf.Min(currentWaterLevel, position.y + ceilingDistance), position.z);
+                        if (floatingObjectAbove == null)
+                        {
+                            position = new Vector3(position.x, Mathf.Min(currentWaterLevel, position.y + ceilingDistance), position.z);
+                        }
+                        else
+                        {
+                            position = new Vector3(position.x, currentWaterLevel, position.z);
+                        }
                     }
                     else
                     {
@@ -250,13 +273,15 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             }
             else // Stick to the crate below if there is one, destroy this crate if squished
             {
+                position.y = floatingObjectBelow.transform.position.y + floatingObjectBelow.collider.size.y + 0.01f;
+
                 if (isAgainstCeiling)
                 {
                     Destroy(gameObject);
                 }
             }
 
-            //position = new Vector3(Mathf.RoundToInt(position.x), position.y, Mathf.RoundToInt(position.z));
+            position = new Vector3(Mathf.RoundToInt(position.x), position.y, Mathf.RoundToInt(position.z));
         }
 
         goalPosition = position;
