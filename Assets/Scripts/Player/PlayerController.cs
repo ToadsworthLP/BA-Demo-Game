@@ -57,6 +57,11 @@ public class PlayerController : MonoBehaviour, ICharacterController
         input.Main.Interact.performed += interactionTrigger.OnInteract;
     }
 
+    private void OnDestroy()
+    {
+        input.Main.Interact.performed -= interactionTrigger.OnInteract;
+    }
+
     private void FixedUpdate()
     {
         if (isDead || stageCleared || IsFrozen) return;

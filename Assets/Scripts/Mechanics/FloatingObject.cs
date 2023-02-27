@@ -37,6 +37,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     private Vector3 interactionTargetPosition;
 
     private RaycastHit[] groundCheckBuffer;
+    private RaycastHit[] wallCheckBuffer;
 
     private Transform floatingObjectBelow;
     private Transform floatingObjectAbove;
@@ -49,6 +50,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
         physicsMover.MoverController = this;
 
         groundCheckBuffer = new RaycastHit[16];
+        wallCheckBuffer = new RaycastHit[16];
     }
 
     public void UpdateMovement(out Vector3 goalPosition, out Quaternion goalRotation, float deltaTime)
@@ -56,7 +58,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
         isSubmerged = Physics.CheckSphere(transform.position, 0.01f, floatingCheckLayerMask);
 
         // Ground check
-        int raycastHitCount = Physics.RaycastNonAlloc(transform.position + raycastOffset, Vector3.down, groundCheckBuffer, Mathf.Max(Mathf.Abs(fallVelocity.y), groundRaycastDistance), groundCheckLayerMask);
+        int raycastHitCount = Physics.BoxCastNonAlloc(transform.position + raycastOffset, new Vector3(collider.size.x, 0.01f, collider.size.z) / 2 * 0.99f, Vector3.down, groundCheckBuffer, transform.rotation, Mathf.Max(Mathf.Abs(fallVelocity.y), groundRaycastDistance), groundCheckLayerMask);
         if (raycastHitCount > 0)
         {
             // Find closest hit that isn't a self-hit
@@ -101,7 +103,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
         }
 
         // Ceiling check
-        raycastHitCount = Physics.RaycastNonAlloc(transform.position + raycastOffset, Vector3.up, groundCheckBuffer, ceilingRaycastDistance, groundCheckLayerMask);
+        raycastHitCount = Physics.BoxCastNonAlloc(transform.position + raycastOffset, new Vector3(collider.size.x, 0.01f, collider.size.z) / 2 * 0.99f, Vector3.up, groundCheckBuffer, transform.rotation, ceilingRaycastDistance, groundCheckLayerMask);
         if (raycastHitCount > 0)
         {
             // Find closest hit that isn't a self-hit
@@ -160,6 +162,31 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             else
             {
                 position += (interactionTargetPosition - transform.position).normalized * pushSpeed * Time.fixedDeltaTime;
+            }
+
+            // Still float up  and down if submerged
+            if (!isGrounded && isSubmerged)
+            {
+                if (isAgainstCeiling && floatingObjectAbove == null)
+                {
+                    position = new Vector3(position.x, Mathf.Min(currentWaterLevel, position.y + ceilingDistance), position.z);
+                }
+                else
+                {
+                    position = new Vector3(position.x, currentWaterLevel, position.z);
+                }
+            }
+
+            if (isGrounded && isSubmerged)
+            {
+                if (isAgainstCeiling && floatingObjectAbove == null)
+                {
+                    position = new Vector3(position.x, Mathf.Min(currentWaterLevel, position.y + ceilingDistance), position.z);
+                }
+                else
+                {
+                    position = new Vector3(position.x, Mathf.Max(currentWaterLevel, position.y - groundDistance), position.z);
+                }
             }
         }
         else // Do normal physics
@@ -250,10 +277,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
     public void Focus(InteractionContext context)
     {
-        if (!isSubmerged)
-        {
-            rendererObject.layer = Constants.FOCUSED_INTERACTABLE_LAYER;
-        }
+        rendererObject.layer = Constants.FOCUSED_INTERACTABLE_LAYER;
     }
 
     public void Unfocus(InteractionContext context)
@@ -263,9 +287,8 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
     public void Interact(InteractionContext context)
     {
-        if (interactionMovementInProgress || !isGrounded || isSubmerged) return;
+        if (interactionMovementInProgress || (!isGrounded && !isSubmerged)) return;
 
-        Vector3 bestDirection;
         Vector3 playerPosition = context.player.transform.position;
         Vector3 checkVector = transform.position - playerPosition;
 
@@ -284,7 +307,17 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
         Vector3 targetDirection = pushDirections[bestIndex];
 
-        bool hitSomething = Physics.Raycast(transform.position, targetDirection, (collider.size.x / 2) + (pushDistance * 0.99f), wallCheckLayerMask);
+        int hitCount = Physics.BoxCastNonAlloc(transform.position, collider.size / 2 * 0.99f, targetDirection, wallCheckBuffer, transform.rotation, pushDistance, wallCheckLayerMask);
+        bool hitSomething = false;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            if (wallCheckBuffer[i].transform.gameObject != gameObject)
+            {
+                hitSomething = true;
+                break;
+            }
+        }
 
         if (!hitSomething)
         {

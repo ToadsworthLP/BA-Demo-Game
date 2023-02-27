@@ -125,7 +125,7 @@ MonoBehaviour:
   wallCheckLayerMask:
     serializedVersion: 2
     m_Bits: 65
-  pushDistance: 2
+  pushDistance: 1
   pushSpeed: 4
   pushDirections:
   - {x: 1, y: 0, z: 0}

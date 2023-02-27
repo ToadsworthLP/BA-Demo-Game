@@ -32,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 5066294025322732058}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &5066294023833141744
 Animator:
@@ -79,10 +79,10 @@ MonoBehaviour:
   deathAnimationDelay: 0.25
   clearAnimationDelay: 1.25
   resetAnimationDelay: 0.25
-  currentStage: 0
+  currentStage: 1
   stageSceneNames:
   - Tutorial
-  - Prototype
+  - Stage1
 --- !u!1 &5066294024014041149
 GameObject:
   m_ObjectHideFlags: 0
@@ -816,10 +816,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 2
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ReferenceResolution: {x: 1280, y: 720}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
