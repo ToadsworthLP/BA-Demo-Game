@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
     [SerializeField] private LayerMask deathTriggerLayer;
     [SerializeField] private Vector3 deathTriggerOffset;
     [SerializeField] private float deathTriggerRadius;
+    [SerializeField] private float deathPlaneY;
     [SerializeField] private ScriptableObjectEvent playerDeathEvent;
 
     [Header("Goal Check")]
@@ -83,6 +84,16 @@ public class PlayerController : MonoBehaviour, ICharacterController
         // Move and look inputs
         movementInput = cameraPlanarRotation * moveInputVector;
         lookDirection = movementInput;
+
+        // If the player is below the death plane, die
+        if (transform.position.y < deathPlaneY)
+        {
+            if (!isDead)
+            {
+                isDead = true;
+                playerDeathEvent.Invoke();
+            }
+        }
 
         // If something collides for more than deathWaitFrames frames, die
         if (Physics.CheckSphere(transform.position + deathTriggerOffset, deathTriggerRadius, deathTriggerLayer, QueryTriggerInteraction.Collide))

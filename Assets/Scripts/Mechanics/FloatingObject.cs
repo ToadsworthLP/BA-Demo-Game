@@ -39,8 +39,8 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     private RaycastHit[] groundCheckBuffer;
     private RaycastHit[] wallCheckBuffer;
 
-    private Transform floatingObjectBelow;
-    private Transform floatingObjectAbove;
+    private FloatingObject floatingObjectBelow;
+    private FloatingObject floatingObjectAbove;
 
     private void Start()
     {
@@ -85,7 +85,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
                 if (groundCheckBuffer[currentClosestIndex].collider.CompareTag(stickyFloorTag))
                 {
-                    floatingObjectBelow = groundCheckBuffer[currentClosestIndex].transform;
+                    floatingObjectBelow = groundCheckBuffer[currentClosestIndex].transform.GetComponent<FloatingObject>();
                 }
             }
             else
@@ -130,7 +130,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
                 if (groundCheckBuffer[currentClosestIndex].collider.CompareTag(stickyFloorTag))
                 {
-                    floatingObjectAbove = groundCheckBuffer[currentClosestIndex].transform;
+                    floatingObjectAbove = groundCheckBuffer[currentClosestIndex].transform.GetComponent<FloatingObject>();
                 }
             }
             else
@@ -250,13 +250,13 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             }
             else // Stick to the crate below if there is one, destroy this crate if squished
             {
-                position = new Vector3(floatingObjectBelow.position.x, floatingObjectBelow.position.y + collider.size.y + 0.01f, floatingObjectBelow.position.z);
-
                 if (isAgainstCeiling)
                 {
                     Destroy(gameObject);
                 }
             }
+
+            //position = new Vector3(Mathf.RoundToInt(position.x), position.y, Mathf.RoundToInt(position.z));
         }
 
         goalPosition = position;
@@ -307,7 +307,23 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
         Vector3 targetDirection = pushDirections[bestIndex];
 
-        int hitCount = Physics.BoxCastNonAlloc(transform.position, collider.size / 2 * 0.99f, targetDirection, wallCheckBuffer, transform.rotation, pushDistance, wallCheckLayerMask);
+        MoveObject(targetDirection, pushDistance);
+    }
+
+    private void MoveObject(Vector3 targetDirection, float pushDistance)
+    {
+        if (CheckMovement(targetDirection, pushDistance))
+        {
+            interactionTargetPosition = transform.position + (targetDirection * pushDistance);
+            interactionMovementInProgress = true;
+
+            if (floatingObjectAbove != null) floatingObjectAbove.MoveObject(targetDirection, pushDistance);
+        }
+    }
+
+    private bool CheckMovement(Vector3 targetDirection, float pushDistance)
+    {
+        int hitCount = Physics.BoxCastNonAlloc(transform.position, collider.size / 2 * 0.98f, targetDirection, wallCheckBuffer, transform.rotation, pushDistance, wallCheckLayerMask);
         bool hitSomething = false;
 
         for (int i = 0; i < hitCount; i++)
@@ -315,14 +331,11 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             if (wallCheckBuffer[i].transform.gameObject != gameObject)
             {
                 hitSomething = true;
+                Debug.Log(wallCheckBuffer[i].transform.gameObject.name);
                 break;
             }
         }
 
-        if (!hitSomething)
-        {
-            interactionTargetPosition = transform.position + (targetDirection * pushDistance);
-            interactionMovementInProgress = true;
-        }
+        return !hitSomething;
     }
 }
