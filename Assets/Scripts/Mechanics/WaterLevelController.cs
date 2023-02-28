@@ -27,8 +27,10 @@ public class WaterLevelController : MonoBehaviour
     {
         cameraShakeImpulse = GetComponent<CinemachineImpulseSource>();
         currentWaterLevel.Value = initialWaterLevel;
-
         shoreAlphaClip = shoreAlphaClipVisible;
+
+        transform.position = new Vector3(transform.position.x, currentWaterLevel, transform.position.z);
+        UpdateTowerMaterials(currentWaterLevel);
     }
 
     private void OnEnable()
