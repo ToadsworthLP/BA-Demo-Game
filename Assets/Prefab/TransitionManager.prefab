@@ -83,6 +83,7 @@ MonoBehaviour:
   stageSceneNames:
   - Tutorial
   - Stage1
+  - Stage2
 --- !u!1 &5066294024014041149
 GameObject:
   m_ObjectHideFlags: 0

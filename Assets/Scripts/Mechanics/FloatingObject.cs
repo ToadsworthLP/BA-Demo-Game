@@ -42,6 +42,8 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     private FloatingObject floatingObjectBelow;
     private FloatingObject floatingObjectAbove;
 
+    private bool hasPanickedThisFrame;
+
     private void Start()
     {
         collider = GetComponent<BoxCollider>();
@@ -65,6 +67,9 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             float currentClosestDistance = float.PositiveInfinity;
             int currentClosestIndex = -1;
 
+            float currentClosestToFloatingObjBelowDistance = float.PositiveInfinity;
+            int currentClosestFloatingObjBelowIndex = -1;
+
             for (int i = 0; i < raycastHitCount; i++)
             {
                 RaycastHit hit = groundCheckBuffer[i];
@@ -76,6 +81,12 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
                     currentClosestDistance = hit.distance - raycastOffset.y - (collider.size.y / 2);
                     currentClosestIndex = i;
                 }
+
+                if (hit.distance < currentClosestToFloatingObjBelowDistance && groundCheckBuffer[currentClosestIndex].collider.CompareTag(stickyFloorTag))
+                {
+                    currentClosestToFloatingObjBelowDistance = hit.distance + raycastOffset.y - (collider.size.y / 2);
+                    currentClosestFloatingObjBelowIndex = i;
+                }
             }
 
             if (currentClosestIndex >= 0)
@@ -83,9 +94,14 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
                 isGrounded = currentClosestDistance <= 0.1f;
                 groundDistance = currentClosestDistance;
 
-                if (groundCheckBuffer[currentClosestIndex].collider.CompareTag(stickyFloorTag))
+                if (currentClosestFloatingObjBelowIndex >= 0)
                 {
-                    floatingObjectBelow = groundCheckBuffer[currentClosestIndex].transform.GetComponent<FloatingObject>();
+                    if (floatingObjectBelow == null || groundCheckBuffer[currentClosestFloatingObjBelowIndex].transform != floatingObjectBelow.transform)
+                        floatingObjectBelow = groundCheckBuffer[currentClosestFloatingObjBelowIndex].transform.GetComponent<FloatingObject>();
+                }
+                else
+                {
+                    floatingObjectBelow = null;
                 }
             }
             else
@@ -163,7 +179,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             floatingObjectAbove = null;
         }
 
-        //Debug.Log($"{name}: G {isGrounded} {groundDistance} b {floatingObjectBelow == null} C {isAgainstCeiling} {ceilingDistance} a {floatingObjectAbove == null} S {isSubmerged}", this);
+        //Debug.Log($"{name}: G {isGrounded} {groundDistance} Fl. below {floatingObjectBelow != null} C {isAgainstCeiling} {ceilingDistance} Fl. above {floatingObjectAbove != null} Sub {isSubmerged}", this);
 
         Vector3 position = transform.position;
 
@@ -207,6 +223,18 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
         }
         else // Do normal physics
         {
+            if (floatingObjectBelow != null && floatingObjectBelow == floatingObjectAbove) // Panic if stuck inside another crate and try to get out
+            {
+                Vector3 abovePos = floatingObjectAbove.transform.position;
+                floatingObjectAbove.transform.position = new Vector3(abovePos.x, abovePos.y + floatingObjectBelow.collider.size.y + 0.01f, abovePos.z);
+
+                hasPanickedThisFrame = true;
+            }
+            else
+            {
+                hasPanickedThisFrame = false;
+            }
+
             if (floatingObjectBelow == null) // Do normal physics if not glued to another crate below
             {
                 if (isGrounded || isSubmerged)
@@ -275,7 +303,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             {
                 position.y = floatingObjectBelow.transform.position.y + floatingObjectBelow.collider.size.y + 0.01f;
 
-                if (isAgainstCeiling)
+                if (isAgainstCeiling && !hasPanickedThisFrame)
                 {
                     Destroy(gameObject);
                 }
@@ -356,7 +384,6 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             if (wallCheckBuffer[i].transform.gameObject != gameObject)
             {
                 hitSomething = true;
-                Debug.Log(wallCheckBuffer[i].transform.gameObject.name);
                 break;
             }
         }
