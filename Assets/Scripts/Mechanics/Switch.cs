@@ -7,14 +7,14 @@ public class Switch : MonoBehaviour
     [SerializeField] private Vector3 pressedCheckOffset;
     [SerializeField] private Vector3 pressedCheckHalfExtents;
     [SerializeField] private LayerMask pressedCheckLayerMask;
-    [SerializeField] private GameObject target;
+    [SerializeField] private GameObject[] targets;
 
     [Header("Visuals")]
     [SerializeField] private MeshRenderer model;
     [SerializeField] private List<Material> onMaterials;
     [SerializeField] private List<Material> offMaterials;
 
-    private ISwitchable targetSwitchable;
+    private ISwitchable[] targetSwitchables;
     private Collider[] buffer;
 
     private bool onLastFrame = false;
@@ -22,9 +22,13 @@ public class Switch : MonoBehaviour
     private void Start()
     {
         buffer = new Collider[1];
-        targetSwitchable = target.GetComponent<ISwitchable>();
+        targetSwitchables = new ISwitchable[targets.Length];
 
-        if (targetSwitchable == null) Debug.LogError($"No ISwitchable implementation found on target object {target.name}.");
+        for (int i = 0; i < targets.Length; i++)
+        {
+            targetSwitchables[i] = targets[i].GetComponent<ISwitchable>();
+            if (targetSwitchables[i] == null) Debug.LogError($"No ISwitchable implementation found on target object {targets[i].name}.");
+        }
     }
 
     private void FixedUpdate()
@@ -34,7 +38,11 @@ public class Switch : MonoBehaviour
         {
             if (!onLastFrame)
             {
-                targetSwitchable.On();
+                foreach (ISwitchable targetSwitchable in targetSwitchables)
+                {
+                    targetSwitchable.On();
+                }
+
                 model.SetMaterials(onMaterials);
                 onLastFrame = true;
             }
@@ -43,7 +51,11 @@ public class Switch : MonoBehaviour
         {
             if (onLastFrame)
             {
-                targetSwitchable.Off();
+                foreach (ISwitchable targetSwitchable in targetSwitchables)
+                {
+                    targetSwitchable.Off();
+                }
+
                 model.SetMaterials(offMaterials);
                 onLastFrame = false;
             }

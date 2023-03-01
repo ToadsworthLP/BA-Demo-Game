@@ -2942,7 +2942,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.35
   m_Height: 1.6
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -2959,7 +2959,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Capsule: {fileID: 4027791172810330665}
-  CapsuleRadius: 0.4
+  CapsuleRadius: 0.35
   CapsuleHeight: 1.6
   CapsuleYOffset: 0
   CapsulePhysicsMaterial: {fileID: 0}
@@ -2970,7 +2970,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   DiscreteCollisionEvents: 0
   StepHandling: 1
-  MaxStepHeight: 0.5
+  MaxStepHeight: 0.25
   AllowSteppingWithoutStableGrounding: 1
   MinRequiredStepDepth: 0
   LedgeAndDenivelationHandling: 1
@@ -3021,7 +3021,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   goalTriggerOffset: {x: 0, y: 0, z: 0}
-  goalTriggerRadius: 0.4
+  goalTriggerRadius: 0.3
   clearStageEvent: {fileID: 11400000, guid: e573c7aa7a9dc67498e69d60a7a93c3a, type: 2}
 --- !u!1 &4027791172920889730
 GameObject:
@@ -24726,7 +24726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 4027791172810330667}
-  triggerRadius: 0.5
+  triggerRadius: 0.4
   interactionLayerMask:
     serializedVersion: 2
     m_Bits: 192
