@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{e21007f6-87b7-44aa-9476-eda0fc265ced}">
+		<property name="assetPath">
+			<value>BGM/Bass.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>33.538458333333331</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{2b52c819-f26a-4766-85aa-fdcaee6a784b}</destination>
+		</relationship>
+	</object>
+</objects>

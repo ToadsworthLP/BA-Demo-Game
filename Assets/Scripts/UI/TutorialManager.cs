@@ -25,6 +25,8 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private float afterDelay;
     [SerializeField] private float fadeTime;
     [SerializeField] private ScriptableObjectEvent tutorialEndEvent;
+    [SerializeField] private BoolContainer isFMODReady;
+    [SerializeField] private GameObject loadingText;
 
     private PlayerInput input;
 
@@ -81,7 +83,14 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(afterDelay);
 
+        if (!isFMODReady) loadingText.SetActive(true);
+
+        while (!isFMODReady) yield return null;
+
+        loadingText.SetActive(false);
+
         player.IsFrozen = false;
+
         tutorialEndEvent.Invoke();
     }
 }

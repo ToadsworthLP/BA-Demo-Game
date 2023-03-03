@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{5f72d6be-2b9e-403b-a0a2-8390e893cd33}">
+		<property name="assetPath">
+			<value>BGM/Soft Pad Harsh Layer.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>33.538458333333331</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{2b52c819-f26a-4766-85aa-fdcaee6a784b}</destination>
+		</relationship>
+	</object>
+</objects>
