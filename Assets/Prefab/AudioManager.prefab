@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   adaptiveMusicEnabled: 1
   mainBank: Master
+  intensityParameterName: Intensity
   bgmEventReference:
     Guid:
       Data1: -449177841
@@ -56,3 +57,6 @@ MonoBehaviour:
   isFMODReady: {fileID: 11400000, guid: 67c936cdf6044f2468000102e129148a, type: 2}
   triggerRegistry: {fileID: 11400000, guid: 624cd231da2e78146ac83d5c2cd87c0d, type: 2}
   overrides: {fileID: 11400000, guid: a8b122d93ae6cd84db1c7098e356b8e1, type: 2}
+  stageClearBgmFadeSpeed: 5
+  clearStageEvent: {fileID: 11400000, guid: e573c7aa7a9dc67498e69d60a7a93c3a, type: 2}
+  startStageEvent: {fileID: 11400000, guid: b1415ef76b72d1e48b13ecc62a8cf87b, type: 2}

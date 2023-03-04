@@ -7,9 +7,9 @@ public class AdaptiveSoundTrigger : MonoBehaviour
     public class Condition
     {
         public LayerMask checkLayer;
-        public ConditionShape shape;
         public Vector3 offset;
-        public float size;
+        public Vector3 halfExtents;
+        public GameObject specificTarget;
         public bool invert;
     }
 
@@ -19,44 +19,59 @@ public class AdaptiveSoundTrigger : MonoBehaviour
     [SerializeField] private AdaptiveSoundTriggerRegistry registry;
     [SerializeField] private Condition[] conditions;
     [SerializeField] private LogicalOperator logicalOperator;
+    [SerializeField] private bool invert;
     [SerializeField] private float weight;
 
     private Collider[] hitBuffer;
 
     public float Query()
     {
-        bool currentValue = logicalOperator == LogicalOperator.AND;
+        int passedConditions = 0;
 
         foreach (Condition condition in conditions)
         {
             int hits = 0;
 
-            if (condition.shape == ConditionShape.CUBE)
-            {
-                hits = Physics.OverlapBoxNonAlloc(transform.position + condition.offset, new Vector3(condition.size / 2, condition.size / 2, condition.size / 2), hitBuffer, Quaternion.identity, condition.checkLayer);
+            hits = Physics.OverlapBoxNonAlloc(transform.position + condition.offset, condition.halfExtents, hitBuffer, Quaternion.identity, condition.checkLayer);
 
-            }
-            else if (condition.shape == ConditionShape.SPHERE)
+            if (condition.specificTarget != null)
             {
-                hits = Physics.OverlapSphereNonAlloc(transform.position + condition.offset, condition.size, hitBuffer, condition.checkLayer);
+                bool found = false;
+
+                for (int i = 0; i < hits; i++)
+                {
+                    if (hitBuffer[i].gameObject == condition.specificTarget) found |= true;
+                }
+
+                if (!found) hits = 0;
             }
 
-            if (logicalOperator == LogicalOperator.AND)
+            if (condition.invert)
             {
-                currentValue &= condition.invert ? hits <= 0 : hits > 0;
+                if (hits == 0) passedConditions++;
             }
-            else if (logicalOperator == LogicalOperator.OR)
+            else
             {
-                currentValue |= condition.invert ? hits <= 0 : hits > 0;
+                if (hits > 0) passedConditions++;
             }
         }
 
-        return currentValue ? 1f * weight : 0f;
+        bool result;
+        if (logicalOperator == LogicalOperator.AND)
+        {
+            result = passedConditions == conditions.Length;
+        }
+        else
+        {
+            result = passedConditions > 0;
+        }
+
+        return ((invert ? !result : result) ? 1f : 0f) * weight;
     }
 
     private void Start()
     {
-        hitBuffer = new Collider[1];
+        hitBuffer = new Collider[4];
         registry.Register(this);
     }
 
@@ -77,14 +92,7 @@ public class AdaptiveSoundTrigger : MonoBehaviour
             Condition condition = conditions[i];
             Gizmos.color = previewColors[i % previewColors.Length];
 
-            if (condition.shape == ConditionShape.CUBE)
-            {
-                Gizmos.DrawWireCube(transform.position + condition.offset, new Vector3(condition.size, condition.size, condition.size));
-            }
-            else if (condition.shape == ConditionShape.SPHERE)
-            {
-                Gizmos.DrawWireSphere(transform.position + condition.offset, condition.size);
-            }
+            Gizmos.DrawWireCube(transform.position + condition.offset, condition.halfExtents * 2);
         }
     }
 

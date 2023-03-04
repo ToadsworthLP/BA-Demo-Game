@@ -70,6 +70,7 @@ MonoBehaviour:
   playerDeathEvent: {fileID: 11400000, guid: a06370efc30b23d43902eb87a7c74ec4, type: 2}
   clearStageEvent: {fileID: 11400000, guid: e573c7aa7a9dc67498e69d60a7a93c3a, type: 2}
   resetStageEvent: {fileID: 11400000, guid: 37c2fd2de96bfed4880ea553c54c48a8, type: 2}
+  startStageEvent: {fileID: 11400000, guid: b1415ef76b72d1e48b13ecc62a8cf87b, type: 2}
   animator: {fileID: 5066294023833141744}
   tutorialEndAnimationTriggerName: TutorialEnd
   deathAnimationTriggerName: Death

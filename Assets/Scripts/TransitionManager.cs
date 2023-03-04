@@ -11,6 +11,7 @@ public class TransitionManager : MonoBehaviour
     [SerializeField] private ScriptableObjectEvent playerDeathEvent;
     [SerializeField] private ScriptableObjectEvent clearStageEvent;
     [SerializeField] private ScriptableObjectEvent resetStageEvent;
+    [SerializeField] private ScriptableObjectEvent startStageEvent;
 
     [Header("Animations")]
     [SerializeField] private Animator animator;
@@ -48,6 +49,7 @@ public class TransitionManager : MonoBehaviour
     private void OnAfterTutorial()
     {
         animator.SetTrigger(tutorialEndAnimationTriggerName);
+        startStageEvent.Invoke();
     }
 
     private void OnPlayerDeath()
@@ -81,5 +83,7 @@ public class TransitionManager : MonoBehaviour
         }
 
         animator.SetTrigger(startAnimationTriggerName);
+
+        startStageEvent.Invoke();
     }
 }

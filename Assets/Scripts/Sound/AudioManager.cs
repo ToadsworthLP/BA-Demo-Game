@@ -10,13 +10,21 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private bool adaptiveMusicEnabled;
     [SerializeField, BankRef] private string mainBank;
+    [SerializeField] private string intensityParameterName;
     [SerializeField] private EventReference bgmEventReference;
     [SerializeField] private BoolContainer isFMODReady;
     [SerializeField] private AdaptiveSoundTriggerRegistry triggerRegistry;
     [SerializeField] private AdaptiveSoundOverrides overrides;
+    [SerializeField] private float stageClearBgmFadeSpeed;
+    [SerializeField] private ScriptableObjectEvent clearStageEvent;
+    [SerializeField] private ScriptableObjectEvent startStageEvent;
 
     private EventInstance bgmEventInstance;
     private PARAMETER_ID intensityParameter;
+
+    private float initialBgmVolume;
+    private float currentBgmVolume;
+    private float targetBgmVolume;
 
     private void Start()
     {
@@ -37,8 +45,16 @@ public class AudioManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        bgmEventInstance.release();
-        bgmEventInstance.clearHandle();
+        if (Instance == this)
+        {
+            bgmEventInstance.release();
+            bgmEventInstance.clearHandle();
+
+            clearStageEvent.Unsubscribe(OnStageCleared);
+            startStageEvent.Unsubscribe(OnStageStart);
+
+            Instance = null;
+        }
     }
 
     private void Update()
@@ -49,11 +65,26 @@ public class AudioManager : MonoBehaviour
             {
                 triggerRegistry.Update();
                 float currentIntensity = (triggerRegistry.ReadValue01() * overrides.intensityMultiplier) + overrides.intensityOffset;
+                currentIntensity = Mathf.Clamp01(currentIntensity);
                 bgmEventInstance.setParameterByID(intensityParameter, currentIntensity);
             }
             else
             {
                 bgmEventInstance.setParameterByID(intensityParameter, overrides.defaultIntensity);
+            }
+
+            if (currentBgmVolume != targetBgmVolume)
+            {
+                if (Mathf.Abs(currentBgmVolume - targetBgmVolume) < 0.01f)
+                {
+                    targetBgmVolume = currentBgmVolume;
+                }
+                else
+                {
+                    currentBgmVolume = Mathf.Lerp(currentBgmVolume, targetBgmVolume, stageClearBgmFadeSpeed * Time.deltaTime);
+                }
+
+                bgmEventInstance.setVolume(currentBgmVolume);
             }
         }
     }
@@ -63,13 +94,20 @@ public class AudioManager : MonoBehaviour
         EventDescription eventDescription = RuntimeManager.GetEventDescription(bgmEventReference);
 
         PARAMETER_DESCRIPTION param;
-        eventDescription.getParameterDescriptionByName("Intensity", out param);
+        eventDescription.getParameterDescriptionByName(intensityParameterName, out param);
         intensityParameter = param.id;
 
         eventDescription.createInstance(out bgmEventInstance);
 
         bgmEventInstance.setParameterByID(intensityParameter, 0f);
         bgmEventInstance.start();
+
+        bgmEventInstance.getVolume(out currentBgmVolume);
+        initialBgmVolume = currentBgmVolume;
+        targetBgmVolume = currentBgmVolume;
+
+        clearStageEvent.Subscribe(OnStageCleared);
+        startStageEvent.Subscribe(OnStageStart);
     }
 
     private IEnumerator InitializeFMOD(Action onInitialized)
@@ -93,5 +131,16 @@ public class AudioManager : MonoBehaviour
         onInitialized();
 
         isFMODReady.Value = true;
+    }
+
+    private void OnStageCleared()
+    {
+        targetBgmVolume = 0.001f;
+    }
+
+    private void OnStageStart()
+    {
+        bgmEventInstance.setParameterByID(intensityParameter, overrides.intensityOffset, true);
+        targetBgmVolume = initialBgmVolume;
     }
 }
