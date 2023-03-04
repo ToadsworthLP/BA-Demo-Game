@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2dd6cbb20e910843955e2934ff5e8b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intensity: 0
+  adaptiveMusicEnabled: 1
   mainBank: Master
   bgmEventReference:
     Guid:
@@ -54,3 +54,5 @@ MonoBehaviour:
       Data4: -1080019224
     Path: event:/BGM_Level
   isFMODReady: {fileID: 11400000, guid: 67c936cdf6044f2468000102e129148a, type: 2}
+  triggerRegistry: {fileID: 11400000, guid: 624cd231da2e78146ac83d5c2cd87c0d, type: 2}
+  overrides: {fileID: 11400000, guid: a8b122d93ae6cd84db1c7098e356b8e1, type: 2}
