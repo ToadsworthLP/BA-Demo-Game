@@ -1,3 +1,4 @@
+using FMODUnity;
 using System.Collections;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ public class SwitchableObject : MonoBehaviour, ISwitchable
     [SerializeField] private Transform objectToAnimate;
     [SerializeField] private float animationSpeed;
     [SerializeField] private bool invert;
+    [SerializeField] private EventReference onSound;
+    [SerializeField] private EventReference offSound;
 
     private Coroutine animationCoroutine;
 
@@ -34,6 +37,7 @@ public class SwitchableObject : MonoBehaviour, ISwitchable
     {
         targetScale = invert ? 0 : initialScale;
         objectToSwitch.gameObject.SetActive(!invert);
+        RuntimeManager.PlayOneShot(invert ? offSound : onSound, transform.position);
 
         if (animationCoroutine == null) animationCoroutine = StartCoroutine(AnimateSwitching());
     }
@@ -42,6 +46,7 @@ public class SwitchableObject : MonoBehaviour, ISwitchable
     {
         targetScale = invert ? initialScale : 0;
         objectToSwitch.gameObject.SetActive(invert);
+        RuntimeManager.PlayOneShot(invert ? onSound : offSound, transform.position);
 
         if (animationCoroutine == null) animationCoroutine = StartCoroutine(AnimateSwitching());
     }

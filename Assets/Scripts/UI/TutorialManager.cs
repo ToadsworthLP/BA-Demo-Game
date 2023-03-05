@@ -8,13 +8,13 @@ public class TutorialManager : MonoBehaviour
     public class TutorialPage
     {
         public GameObject parentObject;
-        public CanvasRenderer[] renderers;
+        public CanvasGroup[] canvasGroup;
 
         public void SetAlpha(float alpha)
         {
-            foreach (CanvasRenderer renderer in renderers)
+            foreach (CanvasGroup group in canvasGroup)
             {
-                renderer.SetAlpha(alpha);
+                group.alpha = alpha;
             }
         }
     }

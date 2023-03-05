@@ -1,3 +1,4 @@
+using FMODUnity;
 using UnityEngine;
 
 public class WaterLevelChanger : MonoBehaviour, IInteractable
@@ -12,10 +13,13 @@ public class WaterLevelChanger : MonoBehaviour, IInteractable
     [SerializeField] private float turnAnimationNormalSpeed;
     [SerializeField] private float turnAnimationActiveSpeed;
     [SerializeField] private float turnAnimationTransitionDuration;
+    [SerializeField] private EventReference activateSound;
 
     private float activeTimeRemaining;
     private float currentAnimationSpeed;
     private float targetAnimationSpeed;
+
+    private ParticleSystem particles;
 
     public void Focus(InteractionContext context)
     {
@@ -35,6 +39,9 @@ public class WaterLevelChanger : MonoBehaviour, IInteractable
             changeRate = changeRate
         });
 
+        RuntimeManager.PlayOneShot(activateSound, transform.position);
+        particles.Play();
+
         activeTimeRemaining = Mathf.Abs(currentWaterLevel - targetWaterLevel) / changeRate;
         targetAnimationSpeed = turnAnimationActiveSpeed;
     }
@@ -48,6 +55,11 @@ public class WaterLevelChanger : MonoBehaviour, IInteractable
             targetLevel = targetWaterLevel,
             changeRate = changeRate
         });
+    }
+
+    private void Start()
+    {
+        particles = GetComponentInChildren<ParticleSystem>();
     }
 
     private void Update()

@@ -3023,6 +3023,22 @@ MonoBehaviour:
   goalTriggerOffset: {x: 0, y: 0, z: 0}
   goalTriggerRadius: 0.3
   clearStageEvent: {fileID: 11400000, guid: e573c7aa7a9dc67498e69d60a7a93c3a, type: 2}
+  isFMODReady: {fileID: 11400000, guid: 67c936cdf6044f2468000102e129148a, type: 2}
+  moveSound:
+    Guid:
+      Data1: -1364418917
+      Data2: 1123346943
+      Data3: -640559474
+      Data4: -452800213
+    Path: event:/SFX_PlayerMove
+  moveSoundFadeSpeed: 4
+  stageClearSound:
+    Guid:
+      Data1: 533454006
+      Data2: 1254064908
+      Data3: 769265036
+      Data4: -227315569
+    Path: event:/SFX_StageClear
 --- !u!1 &4027791172920889730
 GameObject:
   m_ObjectHideFlags: 0

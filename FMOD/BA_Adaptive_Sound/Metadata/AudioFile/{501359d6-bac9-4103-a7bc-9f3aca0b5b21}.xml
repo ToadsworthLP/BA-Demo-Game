@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{501359d6-bac9-4103-a7bc-9f3aca0b5b21}">
+		<property name="assetPath">
+			<value>SFX/StageClearBell.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.8320416666666666</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{2b52c819-f26a-4766-85aa-fdcaee6a784b}</destination>
+		</relationship>
+	</object>
+</objects>

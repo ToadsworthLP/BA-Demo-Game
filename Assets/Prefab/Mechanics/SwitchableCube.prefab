@@ -104,6 +104,20 @@ MonoBehaviour:
   objectToAnimate: {fileID: 5592423868008321363}
   animationSpeed: 20
   invert: 0
+  onSound:
+    Guid:
+      Data1: 1096866926
+      Data2: 1102337520
+      Data3: -980317048
+      Data4: 1483881845
+    Path: event:/SFX_Box_Appear
+  offSound:
+    Guid:
+      Data1: 1551730369
+      Data2: 1088660289
+      Data3: 343678859
+      Data4: 374371203
+    Path: event:/SFX_Box_Disappear
 --- !u!1 &5592423868008321362
 GameObject:
   m_ObjectHideFlags: 0

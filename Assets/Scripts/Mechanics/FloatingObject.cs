@@ -1,3 +1,4 @@
+using FMODUnity;
 using KinematicCharacterController;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     [SerializeField] private float pushSpeed;
     [SerializeField] private Vector3[] pushDirections;
     [SerializeField] private string stickyFloorTag;
+    [SerializeField] private EventReference pushSound;
 
     private BoxCollider collider;
     private PhysicsMover physicsMover;
@@ -305,6 +307,7 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
                 if (isAgainstCeiling && !hasPanickedThisFrame)
                 {
+                    RuntimeManager.PlayOneShot(pushSound, transform.position);
                     Destroy(gameObject);
                 }
             }
@@ -360,10 +363,13 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
         Vector3 targetDirection = pushDirections[bestIndex];
 
-        MoveObject(targetDirection, pushDistance);
+        if (MoveObject(targetDirection, pushDistance))
+        {
+            RuntimeManager.PlayOneShot(pushSound, transform.position);
+        }
     }
 
-    private void MoveObject(Vector3 targetDirection, float pushDistance)
+    private bool MoveObject(Vector3 targetDirection, float pushDistance)
     {
         if (CheckMovement(targetDirection, pushDistance))
         {
@@ -371,7 +377,11 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
             interactionMovementInProgress = true;
 
             if (floatingObjectAbove != null) floatingObjectAbove.MoveObject(targetDirection, pushDistance);
+
+            return true;
         }
+
+        return false;
     }
 
     private bool CheckMovement(Vector3 targetDirection, float pushDistance)

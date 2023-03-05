@@ -50,7 +50,7 @@ MonoBehaviour:
   pressedCheckLayerMask:
     serializedVersion: 2
     m_Bits: 200
-  target: {fileID: 0}
+  targets: []
   model: {fileID: 157508224203998986}
   onMaterials:
   - {fileID: 2100000, guid: 62d96d3559bcea94d9738be65bc2e28b, type: 2}
@@ -58,6 +58,20 @@ MonoBehaviour:
   offMaterials:
   - {fileID: 2100000, guid: 62d96d3559bcea94d9738be65bc2e28b, type: 2}
   - {fileID: 2100000, guid: d70674abd4d23b449ab68307dcdac39e, type: 2}
+  onSound:
+    Guid:
+      Data1: -922932326
+      Data2: 1220464851
+      Data3: 2127922326
+      Data4: 1345290502
+    Path: event:/SFX_Switch_On
+  offSound:
+    Guid:
+      Data1: -1740822516
+      Data2: 1294509850
+      Data3: 715404425
+      Data4: 1243226400
+    Path: event:/SFX_Switch_Off
 --- !u!1 &157508224203998985
 GameObject:
   m_ObjectHideFlags: 0

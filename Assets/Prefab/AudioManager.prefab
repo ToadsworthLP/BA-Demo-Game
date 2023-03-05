@@ -46,7 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   adaptiveMusicEnabled: 1
   mainBank: Master
-  intensityParameterName: Intensity
+  isFMODReady: {fileID: 11400000, guid: 67c936cdf6044f2468000102e129148a, type: 2}
+  triggerRegistry: {fileID: 11400000, guid: 624cd231da2e78146ac83d5c2cd87c0d, type: 2}
+  overrides: {fileID: 11400000, guid: a8b122d93ae6cd84db1c7098e356b8e1, type: 2}
   bgmEventReference:
     Guid:
       Data1: -449177841
@@ -54,9 +56,18 @@ MonoBehaviour:
       Data3: -775780953
       Data4: -1080019224
     Path: event:/BGM_Level
-  isFMODReady: {fileID: 11400000, guid: 67c936cdf6044f2468000102e129148a, type: 2}
-  triggerRegistry: {fileID: 11400000, guid: 624cd231da2e78146ac83d5c2cd87c0d, type: 2}
-  overrides: {fileID: 11400000, guid: a8b122d93ae6cd84db1c7098e356b8e1, type: 2}
   stageClearBgmFadeSpeed: 5
+  intensityParameterName: Intensity
   clearStageEvent: {fileID: 11400000, guid: e573c7aa7a9dc67498e69d60a7a93c3a, type: 2}
   startStageEvent: {fileID: 11400000, guid: b1415ef76b72d1e48b13ecc62a8cf87b, type: 2}
+  waterfallSfxEventReference:
+    Guid:
+      Data1: 1218259110
+      Data2: 1141372349
+      Data3: -612340580
+      Data4: 1582310474
+    Path: event:/SFX_Waterfall
+  waterfallSfxFadeSpeed: 5
+  changeTargetWaterLevelEvent: {fileID: 11400000, guid: 0b486c590311c42448ab20957571ce9e,
+    type: 2}
+  currentWaterLevel: {fileID: 11400000, guid: 751a6d1d219838a42aeb1c1870794bc6, type: 2}

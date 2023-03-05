@@ -1,3 +1,4 @@
+using FMODUnity;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,10 @@ public class Switch : MonoBehaviour
     [SerializeField] private MeshRenderer model;
     [SerializeField] private List<Material> onMaterials;
     [SerializeField] private List<Material> offMaterials;
+
+    [Header("Sound")]
+    [SerializeField] private EventReference onSound;
+    [SerializeField] private EventReference offSound;
 
     private ISwitchable[] targetSwitchables;
     private Collider[] buffer;
@@ -44,6 +49,7 @@ public class Switch : MonoBehaviour
                 }
 
                 model.SetMaterials(onMaterials);
+                RuntimeManager.PlayOneShot(onSound, transform.position);
                 onLastFrame = true;
             }
         }
@@ -57,6 +63,7 @@ public class Switch : MonoBehaviour
                 }
 
                 model.SetMaterials(offMaterials);
+                RuntimeManager.PlayOneShot(offSound, transform.position);
                 onLastFrame = false;
             }
         }

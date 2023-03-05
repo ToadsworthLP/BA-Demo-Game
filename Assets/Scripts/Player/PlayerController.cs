@@ -1,3 +1,5 @@
+using FMOD.Studio;
+using FMODUnity;
 using KinematicCharacterController;
 using UnityEngine;
 
@@ -38,14 +40,27 @@ public class PlayerController : MonoBehaviour, ICharacterController
     [SerializeField] private float goalTriggerRadius;
     [SerializeField] private ScriptableObjectEvent clearStageEvent;
 
+    [Header("Sound")]
+    [SerializeField] private BoolContainer isFMODReady;
+    [SerializeField] private EventReference moveSound;
+    [SerializeField] private float moveSoundFadeSpeed;
+    [SerializeField] private EventReference stageClearSound;
+
     private Vector3 movementInput;
     private Vector3 lookDirection;
+    private float lastMovementInputVectorSqrMagnitude;
 
     private KinematicCharacterMotor motor;
 
     private int currentDeathWaitTime;
     private bool isDead = false;
     private bool stageCleared = false;
+
+    private float initialMoveSoundVolume;
+    private float currentMoveSoundVolume;
+    private float targetMoveSoundVolume;
+    private bool moveSoundInstanceReady;
+    private EventInstance moveSoundInstance;
 
     private void Start()
     {
@@ -61,6 +76,55 @@ public class PlayerController : MonoBehaviour, ICharacterController
     private void OnDestroy()
     {
         input.Main.Interact.performed -= interactionTrigger.OnInteract;
+
+        moveSoundInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        moveSoundInstance.release();
+        moveSoundInstance.clearHandle();
+    }
+
+    private void Update()
+    {
+        if (isFMODReady)
+        {
+            if (moveSoundInstanceReady)
+            {
+                if (IsFrozen)
+                {
+                    targetMoveSoundVolume = 0;
+                }
+                else
+                {
+                    targetMoveSoundVolume = lastMovementInputVectorSqrMagnitude < 0.1f ? 0 : initialMoveSoundVolume;
+                }
+
+                if (currentMoveSoundVolume != targetMoveSoundVolume)
+                {
+                    if (Mathf.Abs(currentMoveSoundVolume - targetMoveSoundVolume) < 0.01f)
+                    {
+                        targetMoveSoundVolume = currentMoveSoundVolume;
+                    }
+                    else
+                    {
+                        currentMoveSoundVolume = Mathf.Lerp(currentMoveSoundVolume, targetMoveSoundVolume, moveSoundFadeSpeed * Time.deltaTime);
+                    }
+
+                    moveSoundInstance.setVolume(currentMoveSoundVolume);
+                }
+
+            }
+            else
+            {
+                EventDescription description = RuntimeManager.GetEventDescription(moveSound);
+                description.createInstance(out moveSoundInstance);
+                RuntimeManager.AttachInstanceToGameObject(moveSoundInstance, transform, motor.AttachedRigidbody);
+                moveSoundInstance.start();
+
+                moveSoundInstance.getVolume(out initialMoveSoundVolume);
+                moveSoundInstance.setVolume(0);
+
+                moveSoundInstanceReady = true;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -72,6 +136,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
 
         // Clamp input
         Vector3 moveInputVector = Vector3.ClampMagnitude(new Vector3(rawMovementInput.x, 0, rawMovementInput.y), 1f);
+        lastMovementInputVectorSqrMagnitude = moveInputVector.sqrMagnitude;
 
         // Calculate camera direction and rotation on the character plane
         Vector3 cameraPlanarDirection = Vector3.ProjectOnPlane(cameraTransform.rotation * Vector3.forward, motor.CharacterUp).normalized;
@@ -117,8 +182,11 @@ public class PlayerController : MonoBehaviour, ICharacterController
         {
             if (!stageCleared)
             {
+                RuntimeManager.PlayOneShot(stageClearSound);
+
                 clearStageEvent.Invoke();
                 stageCleared = true;
+                IsFrozen = true;
             }
         }
     }

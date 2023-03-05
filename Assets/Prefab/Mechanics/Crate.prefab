@@ -133,6 +133,13 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 1}
   - {x: 0, y: 0, z: -1}
   stickyFloorTag: Sticky
+  pushSound:
+    Guid:
+      Data1: -473627947
+      Data2: 1312295057
+      Data3: 347933089
+      Data4: -683220977
+    Path: event:/SFX_PushCrate
 --- !u!1 &4880802917956926759
 GameObject:
   m_ObjectHideFlags: 0
