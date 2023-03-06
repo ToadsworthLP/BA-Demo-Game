@@ -56,7 +56,7 @@ MonoBehaviour:
       Data3: -775780953
       Data4: -1080019224
     Path: event:/BGM_Level
-  stageClearBgmFadeSpeed: 5
+  stageClearBgmFadeSpeed: 10
   intensityParameterName: Intensity
   clearStageEvent: {fileID: 11400000, guid: e573c7aa7a9dc67498e69d60a7a93c3a, type: 2}
   startStageEvent: {fileID: 11400000, guid: b1415ef76b72d1e48b13ecc62a8cf87b, type: 2}

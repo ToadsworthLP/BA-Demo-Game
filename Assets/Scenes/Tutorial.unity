@@ -2052,7 +2052,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1576
+  m_Name: pb_Mesh-50988
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -5500,7 +5500,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1590
+  m_Name: pb_Mesh-51002
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -8833,7 +8833,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1562
+  m_Name: pb_Mesh-50974
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -11080,6 +11080,13 @@ MonoBehaviour:
   tutorialEndEvent: {fileID: 11400000, guid: 698a4e35d25597c4dada274eae341ce9, type: 2}
   isFMODReady: {fileID: 11400000, guid: 67c936cdf6044f2468000102e129148a, type: 2}
   loadingText: {fileID: 727494070}
+  clickSound:
+    Guid:
+      Data1: -826626972
+      Data2: 1105069859
+      Data3: -1538134348
+      Data4: -1044053170
+    Path: event:/SFX_TutorialClick
 --- !u!1001 &1685930708
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12095,7 +12102,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1604
+  m_Name: pb_Mesh-51016
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
@@ -12831,7 +12838,7 @@ PrefabInstance:
     - target: {fileID: 4027791172037001311, guid: e4aab977a1e7ede428da53fdc3e0923b,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 2135
+      value: 2147
       objectReference: {fileID: 0}
     - target: {fileID: 4027791172299041498, guid: e4aab977a1e7ede428da53fdc3e0923b,
         type: 3}
@@ -12851,7 +12858,7 @@ PrefabInstance:
     - target: {fileID: 4027791172299041503, guid: e4aab977a1e7ede428da53fdc3e0923b,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 6078
+      value: 6090
       objectReference: {fileID: 0}
     - target: {fileID: 4027791172810330641, guid: e4aab977a1e7ede428da53fdc3e0923b,
         type: 3}
@@ -12936,7 +12943,7 @@ PrefabInstance:
     - target: {fileID: 4027791173097085598, guid: e4aab977a1e7ede428da53fdc3e0923b,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 1828
+      value: 1840
       objectReference: {fileID: 0}
     - target: {fileID: 4027791173536162314, guid: e4aab977a1e7ede428da53fdc3e0923b,
         type: 3}
@@ -12956,7 +12963,7 @@ PrefabInstance:
     - target: {fileID: 4027791173536162319, guid: e4aab977a1e7ede428da53fdc3e0923b,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 2129
+      value: 2141
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

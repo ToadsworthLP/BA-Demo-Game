@@ -24,7 +24,13 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     [SerializeField] private float pushSpeed;
     [SerializeField] private Vector3[] pushDirections;
     [SerializeField] private string stickyFloorTag;
+
+    [Header("Sound")]
     [SerializeField] private EventReference pushSound;
+    [SerializeField] private EventReference landSound;
+    [SerializeField] private EventReference landSplashSound;
+    [SerializeField] private EventReference splashSound;
+
 
     private BoxCollider collider;
     private PhysicsMover physicsMover;
@@ -45,6 +51,10 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
     private FloatingObject floatingObjectAbove;
 
     private bool hasPanickedThisFrame;
+    private bool groundedPreviousFrame;
+    private bool submergedPreviousFrame;
+
+    private bool isFirstFrame = true;
 
     private void Start()
     {
@@ -59,6 +69,9 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
     public void UpdateMovement(out Vector3 goalPosition, out Quaternion goalRotation, float deltaTime)
     {
+        groundedPreviousFrame = isGrounded;
+        submergedPreviousFrame = isSubmerged;
+
         isSubmerged = Physics.CheckSphere(transform.position, 0.01f, floatingCheckLayerMask);
 
         // Ground check
@@ -317,6 +330,21 @@ public class FloatingObject : MonoBehaviour, IMoverController, IInteractable
 
         goalPosition = position;
         goalRotation = transform.rotation;
+
+        // Play sounds
+        if (!isFirstFrame)
+        {
+            if (isGrounded && !groundedPreviousFrame) RuntimeManager.PlayOneShot(landSound, transform.position);
+            if (isSubmerged && !submergedPreviousFrame) RuntimeManager.PlayOneShot(splashSound, transform.position);
+            if (isSubmerged && !submergedPreviousFrame && !groundedPreviousFrame) RuntimeManager.PlayOneShot(landSplashSound, transform.position);
+        }
+        else
+        {
+            isFirstFrame = false;
+
+            groundedPreviousFrame = isGrounded;
+            submergedPreviousFrame = isSubmerged;
+        }
     }
 
     private void OnDrawGizmosSelected()

@@ -3009,6 +3009,7 @@ MonoBehaviour:
   AirAccelerationSpeed: 5
   Drag: 0.1
   Gravity: {x: 0, y: -50, z: 0}
+  currentWaterLevel: {fileID: 11400000, guid: 751a6d1d219838a42aeb1c1870794bc6, type: 2}
   deathWaitFixedFrames: 5
   deathTriggerLayer:
     serializedVersion: 2
@@ -3039,6 +3040,13 @@ MonoBehaviour:
       Data3: 769265036
       Data4: -227315569
     Path: event:/SFX_StageClear
+  splashSound:
+    Guid:
+      Data1: -592083714
+      Data2: 1267553786
+      Data3: -1843667027
+      Data4: 1189238863
+    Path: event:/SFX_WaterSplash
 --- !u!1 &4027791172920889730
 GameObject:
   m_ObjectHideFlags: 0

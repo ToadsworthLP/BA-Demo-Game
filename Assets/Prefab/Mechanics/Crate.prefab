@@ -139,7 +139,28 @@ MonoBehaviour:
       Data2: 1312295057
       Data3: 347933089
       Data4: -683220977
-    Path: event:/SFX_PushCrate
+    Path: event:/SFX_CratePushed
+  landSound:
+    Guid:
+      Data1: -1310025064
+      Data2: 1256223884
+      Data3: 220274610
+      Data4: 433871659
+    Path: event:/SFX_CrateLand
+  landSplashSound:
+    Guid:
+      Data1: -74303767
+      Data2: 1137160223
+      Data3: -1960951133
+      Data4: -122427511
+    Path: event:/SFX_CrateLandWater
+  splashSound:
+    Guid:
+      Data1: -592083714
+      Data2: 1267553786
+      Data3: -1843667027
+      Data4: 1189238863
+    Path: event:/SFX_WaterSplash
 --- !u!1 &4880802917956926759
 GameObject:
   m_ObjectHideFlags: 0

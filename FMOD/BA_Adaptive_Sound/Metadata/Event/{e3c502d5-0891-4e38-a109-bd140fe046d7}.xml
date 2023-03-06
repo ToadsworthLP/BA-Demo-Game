@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{e3c502d5-0891-4e38-a109-bd140fe046d7}">
 		<property name="name">
-			<value>SFX_PushCrate</value>
+			<value>SFX_CratePushed</value>
 		</property>
 		<property name="outputFormat">
 			<value>1</value>
@@ -64,6 +64,12 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{aa179634-f8ac-4041-952a-bdd79a7175c5}">
+		<property name="volume">
+			<value>-1</value>
+		</property>
+		<relationship name="modulators">
+			<destination>{7722ad32-de5b-4d49-9885-eadbb36702ad}</destination>
+		</relationship>
 		<relationship name="effectChain">
 			<destination>{a1cebc52-520e-4d23-a8f4-c2ce0ae5738b}</destination>
 		</relationship>
@@ -94,6 +100,14 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{58e2d577-f9b8-4180-b604-094e51816c22}" />
+	<object class="RandomizerModulator" id="{7722ad32-de5b-4d49-9885-eadbb36702ad}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>pitch</value>
+		</property>
+		<property name="amount">
+			<value>7</value>
+		</property>
+	</object>
 	<object class="MixerBusEffectChain" id="{a1cebc52-520e-4d23-a8f4-c2ce0ae5738b}">
 		<relationship name="effects">
 			<destination>{c7af69fa-64b3-4054-8670-95ce05e4babd}</destination>

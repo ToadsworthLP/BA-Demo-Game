@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
 
     [Header("Physics")]
     [SerializeField] private Vector3 Gravity = new Vector3(0, -30f, 0);
+    [SerializeField] private FloatContainer currentWaterLevel;
 
     [Header("Death Check")]
     [SerializeField] private int deathWaitFixedFrames;
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
     [SerializeField] private EventReference moveSound;
     [SerializeField] private float moveSoundFadeSpeed;
     [SerializeField] private EventReference stageClearSound;
+    [SerializeField] private EventReference splashSound;
 
     private Vector3 movementInput;
     private Vector3 lookDirection;
@@ -61,6 +63,9 @@ public class PlayerController : MonoBehaviour, ICharacterController
     private float targetMoveSoundVolume;
     private bool moveSoundInstanceReady;
     private EventInstance moveSoundInstance;
+
+    private bool firstFrame = true;
+    private bool wasUnderwaterPreviousFrame;
 
     private void Start()
     {
@@ -124,6 +129,19 @@ public class PlayerController : MonoBehaviour, ICharacterController
 
                 moveSoundInstanceReady = true;
             }
+
+            if (motor.TransientPosition.y <= currentWaterLevel)
+            {
+                if (!wasUnderwaterPreviousFrame && !firstFrame) RuntimeManager.PlayOneShot(splashSound, motor.TransientPosition);
+
+                wasUnderwaterPreviousFrame = true;
+            }
+            else
+            {
+                wasUnderwaterPreviousFrame = false;
+            }
+
+            if (firstFrame) firstFrame = false;
         }
     }
 

@@ -1,3 +1,4 @@
+using FMODUnity;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -27,6 +28,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private ScriptableObjectEvent tutorialEndEvent;
     [SerializeField] private BoolContainer isFMODReady;
     [SerializeField] private GameObject loadingText;
+    [SerializeField] private EventReference clickSound;
 
     private PlayerInput input;
 
@@ -65,6 +67,8 @@ public class TutorialManager : MonoBehaviour
             {
                 yield return null;
             }
+
+            RuntimeManager.PlayOneShot(clickSound);
 
             while (currentFadeTime < fadeTime)
             {
