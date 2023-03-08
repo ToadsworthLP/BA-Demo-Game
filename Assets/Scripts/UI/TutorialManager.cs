@@ -26,9 +26,9 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private float afterDelay;
     [SerializeField] private float fadeTime;
     [SerializeField] private ScriptableObjectEvent tutorialEndEvent;
-    [SerializeField] private BoolContainer isFMODReady;
     [SerializeField] private GameObject loadingText;
     [SerializeField] private EventReference clickSound;
+    [SerializeField] private BoolContainer hasSeenTutorial;
 
     private PlayerInput input;
 
@@ -42,7 +42,14 @@ public class TutorialManager : MonoBehaviour
         input = new PlayerInput();
         input.Main.Enable();
 
-        StartCoroutine(StartTutorial());
+        if (!hasSeenTutorial)
+        {
+            StartCoroutine(StartTutorial());
+        }
+        else
+        {
+            player.IsFrozen = false;
+        }
     }
 
     private IEnumerator StartTutorial()
@@ -87,12 +94,7 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(afterDelay);
 
-        if (!isFMODReady) loadingText.SetActive(true);
-
-        while (!isFMODReady) yield return null;
-
-        loadingText.SetActive(false);
-
+        hasSeenTutorial.Value = true;
         player.IsFrozen = false;
 
         tutorialEndEvent.Invoke();

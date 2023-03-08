@@ -49,6 +49,7 @@ MonoBehaviour:
   isFMODReady: {fileID: 11400000, guid: 67c936cdf6044f2468000102e129148a, type: 2}
   triggerRegistry: {fileID: 11400000, guid: 624cd231da2e78146ac83d5c2cd87c0d, type: 2}
   overrides: {fileID: 11400000, guid: a8b122d93ae6cd84db1c7098e356b8e1, type: 2}
+  FMODReadyEvent: {fileID: 11400000, guid: 242d6c114f3e1ec4186fceb3dd8a7b38, type: 2}
   bgmEventReference:
     Guid:
       Data1: -449177841

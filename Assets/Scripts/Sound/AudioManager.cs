@@ -41,6 +41,11 @@ public class AudioManager : MonoBehaviour
     private float currentWaterfallVolume;
     private float targetWaterfallVolume;
 
+    public void SetAdaptiveMusicEnabled(bool value)
+    {
+        adaptiveMusicEnabled = value;
+    }
+
     private void Start()
     {
         if (Instance == null)
