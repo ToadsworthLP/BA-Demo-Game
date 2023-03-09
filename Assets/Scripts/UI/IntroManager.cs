@@ -31,6 +31,7 @@ public class IntroManager : MonoBehaviour
 
         audioManager.SetAdaptiveMusicEnabled(!isInControlGroup);
 
+        logger.Clear();
         logger.Append(new Logger.LogEntry(Logger.LogEntry.Category.GAME_START, isInControlGroup ? "B" : "A"));
 
         StartCoroutine(IntroCoroutine());

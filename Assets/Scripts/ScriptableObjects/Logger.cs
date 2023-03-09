@@ -38,7 +38,11 @@ public class Logger : ScriptableObject
     public void Append(LogEntry entry)
     {
         logEntries.Add(entry);
-        Debug.Log(entry);
+    }
+
+    public void Clear()
+    {
+        logEntries.Clear();
     }
 
     public override string ToString()
@@ -48,7 +52,7 @@ public class Logger : ScriptableObject
         for (int i = 0; i < logEntries.Count; i++)
         {
             LogEntry entry = logEntries[i];
-            if (i != 0) sb.Append(",");
+            if (i != 0) sb.Append("-");
             sb.Append(entry.ToString());
         }
 
