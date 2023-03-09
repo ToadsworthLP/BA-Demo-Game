@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class EndManager : MonoBehaviour
 {
     [SerializeField] private Logger logger;
+    [SerializeField] private string submitUrl;
     [SerializeField] private EventReference clickSound;
     [SerializeField] private EventReference successSound;
     [SerializeField, TextArea] private string successMessage;
@@ -38,7 +39,7 @@ public class EndManager : MonoBehaviour
 
         RuntimeManager.PlayOneShot(clickSound);
 
-        using (UnityWebRequest request = UnityWebRequest.Post("http://toadsworth.ddns.net:5001/survey", $"\"{logger.ToString()}\"", "application/json"))
+        using (UnityWebRequest request = UnityWebRequest.Post(submitUrl, $"\"{logger.ToString()}\"", "application/json"))
         {
             yield return request.SendWebRequest();
 
